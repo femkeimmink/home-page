@@ -655,11 +655,33 @@ function timeAgo(dateStr) {
   return Math.round(hrs / 24) + " dag geleden";
 }
 
+function withTimeout(promise, ms) {
+  const timeout = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error("timeout")), ms)
+  );
+  return Promise.race([promise, timeout]);
+}
+
 async function fetchFeed(feed) {
-  const res = await fetch(PROXY + encodeURIComponent(feed.url));
-  if (!res.ok) throw new Error("fetch failed");
-  const text = await res.text();
-  return parseFeedXml(text).map(item => ({ ...item, source: feed.name, tag: feed.tag }));
+  // Primary: rss2json, returns ready JSON, usually fastest
+  try {
+    const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`;
+    const res = await withTimeout(fetch(url), 6000);
+    const data = await res.json();
+    if (data.status === "ok" && Array.isArray(data.items) && data.items.length) {
+      return data.items.map(item => ({
+        title: item.title, link: item.link, pubDate: item.pubDate,
+        source: feed.name, tag: feed.tag
+      }));
+    }
+    throw new Error("rss2json empty");
+  } catch (e) {
+    // Fallback: raw proxy + manual XML parse
+    const res = await withTimeout(fetch(PROXY + encodeURIComponent(feed.url)), 7000);
+    if (!res.ok) throw new Error("fetch failed");
+    const text = await res.text();
+    return parseFeedXml(text).map(item => ({ ...item, source: feed.name, tag: feed.tag }));
+  }
 }
 
 async function loadNews() {
@@ -674,18 +696,25 @@ async function loadNews() {
   list.innerHTML = '<p class="news-state">Nieuws laden...</p>';
 
   const results = await Promise.allSettled(active.map(fetchFeed));
-  let items = [];
+
+  const perSource = [];
   results.forEach(r => {
-    if (r.status === "fulfilled") items = items.concat(r.value);
+    if (r.status === "fulfilled" && r.value.length) {
+      const sorted = [...r.value].sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+      perSource.push(sorted);
+    }
   });
 
-  if (!items.length) {
+  if (!perSource.length) {
     list.innerHTML = '<p class="news-state">Kon nieuws nu niet ophalen. Probeer het later opnieuw.</p>';
     return;
   }
 
-  items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
-  items = items.slice(0, 20);
+  // Cap per source so one busy feed can't crowd out the others, then sort by time
+  const capped = perSource.flatMap(group => group.slice(0, 8));
+  const items = capped
+    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+    .slice(0, 20);
 
   list.innerHTML = "";
   items.forEach(item => {
