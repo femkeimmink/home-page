@@ -66,13 +66,6 @@
     margin-bottom: 14px;
   }
 
-  .section-title {
-    font-family: 'Fraunces', serif;
-    font-weight: 500;
-    font-size: 19px;
-    margin: 0;
-  }
-
   .text-btn {
     border: none;
     background: none;
@@ -101,7 +94,6 @@
     color: var(--ink);
     padding: 14px 6px 10px;
     background: var(--panel);
-    border: 1px solid var(--line);
     border-radius: 14px;
   }
 
@@ -125,7 +117,7 @@
   .tile.add-tile {
     justify-content: center;
     color: var(--muted);
-    border-style: dashed;
+    border: 1px dashed var(--line);
     cursor: pointer;
     min-height: 74px;
   }
@@ -164,7 +156,6 @@
     flex-direction: column;
     gap: 8px;
     background: var(--panel);
-    border: 1px solid var(--line);
     border-radius: 14px;
     padding: 14px;
     margin-top: 12px;
@@ -258,7 +249,6 @@
     flex-direction: column;
     gap: 10px;
     background: var(--panel);
-    border: 1px solid var(--line);
     border-radius: 14px;
     padding: 14px;
     margin-bottom: 14px;
@@ -311,13 +301,6 @@
   input:checked + .slider { background: var(--sage); }
   input:checked + .slider::before { transform: translateX(16px); }
 
-  footer {
-    text-align: center;
-    color: var(--muted);
-    font-size: 12px;
-    margin-top: 40px;
-  }
-
   /* ---------- Desktop layout ---------- */
   @media (min-width: 860px) {
     body { padding: 48px 32px 60px; }
@@ -330,7 +313,7 @@
       align-items: start;
     }
     .grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
-    #newsSection { border-left: 1px solid var(--line); padding-left: 48px; }
+    #newsSection { padding-left: 48px; }
   }
 </style>
 </head>
@@ -344,8 +327,7 @@
 
   <div class="columns">
   <section id="shortcutsSection">
-    <div class="section-head">
-      <h2 class="section-title">Snelkoppelingen</h2>
+    <div class="section-head" style="justify-content: flex-end;">
       <button class="text-btn" id="editToggle">Bewerken</button>
     </div>
     <div class="grid" id="tileGrid"></div>
@@ -360,8 +342,7 @@
   </section>
 
   <section id="newsSection">
-    <div class="section-head">
-      <h2 class="section-title">Nieuws</h2>
+    <div class="section-head" style="justify-content: flex-end;">
       <button class="text-btn" id="feedToggle">Bronnen</button>
     </div>
 
@@ -380,7 +361,6 @@
   </section>
   </div>
 
-  <footer>Jouw startpagina. Geen advertenties, geen tracking.</footer>
 </div>
 
 <script>
@@ -422,7 +402,9 @@ function save(key, value) {
 let shortcuts = load("startpage_shortcuts", DEFAULT_SHORTCUTS);
 let feeds = load("startpage_feeds", DEFAULT_FEEDS);
 
-/* ---------------- Date + weather ---------------- */
+/* ---------------- Date + weather + time ---------------- */
+let lastWeatherText = "Weer laden...";
+
 function renderDate() {
   const date = new Date().toLocaleDateString("nl-NL", {
     weekday: "long", day: "numeric", month: "long"
@@ -432,21 +414,30 @@ function renderDate() {
 }
 renderDate();
 
+function renderWeatherLine() {
+  const time = new Date().toLocaleTimeString("nl-NL", {
+    hour: "2-digit", minute: "2-digit", hour12: false
+  });
+  document.getElementById("weatherLine").textContent = `${lastWeatherText} · ${time}`;
+}
+
 async function loadWeather() {
-  const el = document.getElementById("weatherLine");
   try {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${UTRECHT.lat}&longitude=${UTRECHT.lon}&current=temperature_2m,weather_code&timezone=Europe/Amsterdam`;
     const res = await fetch(url);
     const data = await res.json();
     const temp = Math.round(data.current.temperature_2m);
     const desc = WEATHER_CODES[data.current.weather_code] || "";
-    el.textContent = `Utrecht, ${temp}°C, ${desc}`;
+    lastWeatherText = `Utrecht, ${temp}°C, ${desc}`;
   } catch (e) {
-    el.textContent = "Weer niet beschikbaar";
+    lastWeatherText = "Weer niet beschikbaar";
   }
+  renderWeatherLine();
 }
+
 loadWeather();
 setInterval(loadWeather, 30 * 60 * 1000);
+setInterval(renderWeatherLine, 60 * 1000);
 
 /* ---------------- Shortcuts ---------------- */
 function faviconFor(url) {
