@@ -8,67 +8,81 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  /* Start Page design system */
   :root {
-    --bg: #FBF9F6;
+    --surface: #FBF7EE;
     --panel: #FFFFFF;
-    --ink: #23222A;
-    --muted: #8C8880;
-    --line: #E7E3DC;
-    --rose: #B4566A;
-    --sage: #566B57;
-    --rose-tint: #F6E9EB;
-    --sage-tint: #E9EFE8;
+    --ink: #2A2233;
+    --muted: #6F6679;
+    --line: #E8E0D0;
+    --plum: #3B2B4A;
+    --gold: #F4B840;
+    --cream: #FAF3E0;
+    --gold-ink: #8A5A00;
+    --plum-tint: #EDE6F2;
+    --space-2: 8px;
+    --space-4: 16px;
+    --space-6: 24px;
+    --space-10: 40px;
+    --radius-sm: 8px;
+    --radius-md: 16px;
   }
-
   :root[data-theme="dark"] {
-    --bg: #17161B;
-    --panel: #201F26;
-    --ink: #F1EFEA;
-    --muted: #9B968E;
-    --line: #322F38;
-    --rose: #DE8496;
-    --sage: #8CAE8D;
-    --rose-tint: #3A252B;
-    --sage-tint: #253326;
-    --tweak: #8FB8DA;
-    --tweak-tint: #212D38;
+    --surface: #1E1726;
+    --panel: #2A2036;
+    --ink: #F5EEDD;
+    --muted: #B3A8BF;
+    --line: #3A2F47;
+    --gold-ink: #F4B840;
+    --plum-tint: #33273F;
   }
-
-  body { transition: background 0.15s, color 0.15s; }
 
   * { box-sizing: border-box; }
 
   body {
     margin: 0;
-    background: var(--bg);
+    background: var(--surface);
     color: var(--ink);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
-    padding: 28px 18px 60px;
+    padding: var(--space-6) var(--space-4) 60px;
+    transition: background 0.15s, color 0.15s;
   }
 
-  .wrap {
-    max-width: 720px;
-    margin: 0 auto;
-  }
+  .wrap { max-width: 720px; margin: 0 auto; }
 
-  /* ---------- Header ---------- */
-  header {
-    margin-bottom: 34px;
-  }
-
+  /* Header */
+  header { margin-bottom: var(--space-10); }
   .header-row {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 12px;
+    gap: var(--space-4);
   }
-
+  .clock {
+    font-size: 40px;
+    line-height: 44px;
+    font-weight: 300;
+    margin: 0 0 var(--space-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .date-line {
+    font-size: 28px;
+    line-height: 34px;
+    font-weight: 600;
+    margin: 0 0 6px;
+  }
+  .weather-line {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 18px;
+    margin: 0;
+  }
   .theme-toggle {
     flex-shrink: 0;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
     border: none;
     background: var(--panel);
     color: var(--ink);
@@ -83,85 +97,63 @@
   [data-theme="dark"] .theme-toggle .moon { display: none; }
   [data-theme="dark"] .theme-toggle .sun { display: block; }
 
-  .date-line {
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    font-size: clamp(20px, 6vw, 26px);
-    margin: 0 0 6px;
-  }
-
-  .weather-line {
-    color: var(--muted);
-    font-size: 14px;
-    margin: 0;
-  }
-
-  /* ---------- Section shell ---------- */
-  section {
-    margin-bottom: 36px;
-  }
-
+  /* Sections */
+  section { margin-bottom: var(--space-10); }
   .section-head {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
+    justify-content: flex-end;
+    margin-bottom: var(--space-4);
   }
-
   .text-btn {
     border: none;
     background: none;
-    color: var(--muted);
-    font-family: 'Inter', sans-serif;
+    color: var(--gold-ink);
+    font-family: inherit;
     font-size: 13px;
+    font-weight: 600;
     padding: 4px 2px;
     cursor: pointer;
   }
   .text-btn:hover { color: var(--ink); }
+  :focus-visible { outline: 2px solid var(--plum); outline-offset: 2px; }
+  [data-theme="dark"] :focus-visible { outline-color: var(--gold); }
 
-  /* ---------- Shortcuts ---------- */
+  /* Shortcuts */
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: var(--space-4);
   }
-
   .tile {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: var(--space-2);
     text-decoration: none;
     color: var(--ink);
-    padding: 14px 6px 10px;
+    padding: var(--space-4) 6px 10px;
     background: var(--panel);
-    border-radius: 14px;
+    border-radius: var(--radius-md);
   }
-
-  .tile img {
-    width: 26px;
-    height: 26px;
-    border-radius: 6px;
-  }
-
+  .tile img { width: 26px; height: 26px; border-radius: 6px; }
   .tile span {
     font-size: 12px;
-    font-weight: 500;
+    line-height: 16px;
+    font-weight: 600;
     text-align: center;
-    line-height: 1.25;
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-
   .tile.add-tile {
     justify-content: center;
     color: var(--muted);
-    border: 1px dashed var(--line);
+    background: var(--plum-tint);
     cursor: pointer;
-    min-height: 74px;
+    min-height: 76px;
   }
   .tile.add-tile span { font-size: 22px; font-weight: 400; }
 
@@ -171,10 +163,10 @@
     right: -6px;
     width: 20px;
     height: 20px;
-    border-radius: 50%;
-    background: var(--rose);
-    color: white;
-    border: 2px solid var(--bg);
+    border-radius: 999px;
+    background: var(--plum);
+    color: var(--cream);
+    border: 2px solid var(--surface);
     font-size: 12px;
     line-height: 1;
     display: none;
@@ -192,36 +184,36 @@
     body.editing .tile { animation: none; }
   }
 
-  /* ---------- Add shortcut form ---------- */
+  /* Forms */
   .add-form {
     display: none;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--space-2);
     background: var(--panel);
-    border-radius: 14px;
-    padding: 14px;
-    margin-top: 12px;
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    margin-top: var(--space-4);
   }
   .add-form.open { display: flex; }
   .add-form input {
     border: 1px solid var(--line);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     padding: 10px 12px;
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    background: var(--bg);
+    font-family: inherit;
+    font-size: 16px;
+    background: var(--surface);
     color: var(--ink);
   }
-  .add-form .row { display: flex; gap: 8px; }
+  .add-form .row { display: flex; gap: var(--space-2); }
   .add-form .row button { flex: 1; }
 
   button.primary {
-    background: var(--ink);
-    color: white;
+    background: var(--plum);
+    color: var(--cream);
     border: none;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     padding: 10px 14px;
-    font-family: 'Inter', sans-serif;
+    font-family: inherit;
     font-weight: 600;
     font-size: 14px;
     cursor: pointer;
@@ -230,73 +222,58 @@
     background: transparent;
     color: var(--muted);
     border: 1px solid var(--line);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     padding: 10px 14px;
-    font-family: 'Inter', sans-serif;
+    font-family: inherit;
     font-size: 14px;
     cursor: pointer;
   }
 
-  /* ---------- News ---------- */
-  .news-list {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
+  /* News */
+  .news-list { display: flex; flex-direction: column; }
   .news-item {
     display: block;
     text-decoration: none;
     color: var(--ink);
-    padding: 13px 0;
+    padding: 14px 0;
     border-bottom: 1px solid var(--line);
   }
   .news-item:last-child { border-bottom: none; }
-
   .news-item .headline {
     font-size: 15px;
-    font-weight: 500;
-    line-height: 1.4;
+    line-height: 22px;
+    font-weight: 400;
     margin-bottom: 4px;
   }
-
   .news-meta {
-    font-size: 12px;
+    font-size: 13px;
+    line-height: 18px;
     color: var(--muted);
     display: flex;
-    gap: 8px;
+    gap: var(--space-2);
     align-items: center;
   }
-
   .source-tag {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
-    padding: 2px 7px;
-    border-radius: 20px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--plum-tint);
+    color: var(--ink);
   }
-  .source-tag.nos { background: var(--sage-tint); color: var(--sage); }
-  .source-tag.nu { background: var(--rose-tint); color: var(--rose); }
-  .source-tag.tweakers { background: var(--tweak-tint, #E7EEF4); color: var(--tweak, #3E6C8E); }
-  .source-tag.custom { background: #EFEFEF; color: var(--muted); }
+  .news-state { color: var(--muted); font-size: 13px; padding: 20px 0; }
 
-  .news-state {
-    color: var(--muted);
-    font-size: 14px;
-    padding: 20px 0;
-  }
-
-  /* ---------- Feed manager ---------- */
+  /* Feed manager */
   .feed-manager {
     display: none;
     flex-direction: column;
     gap: 10px;
     background: var(--panel);
-    border-radius: 14px;
-    padding: 14px;
-    margin-bottom: 14px;
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    margin-bottom: var(--space-4);
   }
   .feed-manager.open { display: flex; }
-
   .feed-row {
     display: flex;
     align-items: center;
@@ -309,10 +286,10 @@
     border: none;
     background: none;
     color: var(--muted);
+    font-family: inherit;
     font-size: 13px;
     cursor: pointer;
   }
-
   label.switch {
     position: relative;
     display: inline-block;
@@ -336,28 +313,34 @@
     height: 16px;
     left: 3px;
     top: 3px;
-    background: white;
-    border-radius: 50%;
+    background: #FFFFFF;
+    border-radius: 999px;
     transition: 0.15s;
   }
-  input:checked + .slider { background: var(--sage); }
+  input:checked + .slider { background: var(--plum); }
+  [data-theme="dark"] input:checked + .slider { background: var(--gold); }
   input:checked + .slider::before { transform: translateX(16px); }
 
-  /* ---------- Desktop layout ---------- */
+  /* iPad and desktop */
   @media (min-width: 860px) {
-    body { padding: 48px 32px 60px; }
+    body { padding: var(--space-10) 32px 60px; }
     .wrap { max-width: 1080px; }
-    header { margin-bottom: 44px; }
     .columns {
       display: grid;
       grid-template-columns: 320px 1fr;
       gap: 48px;
       align-items: start;
     }
-    .grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
-    #newsSection { padding-left: 48px; }
+    #newsSection { padding-left: var(--space-6); }
   }
 </style>
+<script>
+try {
+  document.documentElement.setAttribute("data-theme",
+    localStorage.getItem("startpage_theme") ||
+    (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
+} catch (e) {}
+</script>
 </head>
 <body>
 <div class="wrap">
@@ -365,6 +348,7 @@
   <header>
     <div class="header-row">
       <div>
+        <p class="clock" id="clock"></p>
         <p class="date-line" id="dateLine"></p>
         <p class="weather-line" id="weatherLine">Weer laden...</p>
       </div>
@@ -377,7 +361,7 @@
 
   <div class="columns">
   <section id="shortcutsSection">
-    <div class="section-head" style="justify-content: flex-end;">
+    <div class="section-head">
       <button class="text-btn" id="editToggle">Bewerken</button>
     </div>
     <div class="grid" id="tileGrid"></div>
@@ -392,7 +376,7 @@
   </section>
 
   <section id="newsSection">
-    <div class="section-head" style="justify-content: flex-end;">
+    <div class="section-head">
       <button class="text-btn" id="feedToggle">Bronnen</button>
     </div>
 
@@ -467,9 +451,7 @@ document.getElementById("themeToggle").addEventListener("click", () => {
   localStorage.setItem("startpage_theme", next);
 });
 
-/* ---------------- Date + weather + time ---------------- */
-let lastWeatherText = "Weer laden...";
-
+/* ---------------- Date + time + weather ---------------- */
 function renderDate() {
   const date = new Date().toLocaleDateString("nl-NL", {
     weekday: "long", day: "numeric", month: "long"
@@ -477,14 +459,15 @@ function renderDate() {
   document.getElementById("dateLine").textContent =
     date.charAt(0).toUpperCase() + date.slice(1);
 }
-renderDate();
 
-function renderWeatherLine() {
-  const time = new Date().toLocaleTimeString("nl-NL", {
+function renderClock() {
+  document.getElementById("clock").textContent = new Date().toLocaleTimeString("nl-NL", {
     hour: "2-digit", minute: "2-digit", hour12: false
   });
-  document.getElementById("weatherLine").textContent = `${lastWeatherText} · ${time}`;
+  renderDate();
 }
+renderClock();
+setInterval(renderClock, 30 * 1000);
 
 async function loadWeather() {
   try {
@@ -493,16 +476,14 @@ async function loadWeather() {
     const data = await res.json();
     const temp = Math.round(data.current.temperature_2m);
     const desc = WEATHER_CODES[data.current.weather_code] || "";
-    lastWeatherText = `Utrecht, ${temp}°C, ${desc}`;
+    document.getElementById("weatherLine").textContent = `Utrecht, ${temp}°C, ${desc}`;
   } catch (e) {
-    lastWeatherText = "Weer niet beschikbaar";
+    document.getElementById("weatherLine").textContent = "Weer niet beschikbaar";
   }
-  renderWeatherLine();
 }
 
 loadWeather();
 setInterval(loadWeather, 30 * 60 * 1000);
-setInterval(renderWeatherLine, 60 * 1000);
 
 /* ---------------- Shortcuts ---------------- */
 function faviconFor(url) {
